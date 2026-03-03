@@ -1,0 +1,924 @@
+{% assign section_id = section.id %}
+{% assign s = section.settings %}
+{{ settings.type_heading_font | font_face }}
+{{ settings.type_body_font | font_face }}
+
+<section
+  class="testimonials-section testimonials-section--{{ section_id }}"
+  data-section-id="{{ section_id }}"
+  data-autoplay="{{ s.autoplay_enabled }}"
+  data-autoplay-speed="{{ s.autoplay_speed | times: 1000 }}"
+  style="
+        --testimonials-bg: {{ s.background_color }};
+        --testimonials-pt: {{ s.padding_top }}px;
+        --testimonials-pb: {{ s.padding_bottom }}px;
+        --testimonials-max-width: {{ s.container_max_width }}px;
+    --heading-font: {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
+    --body-font: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+  "
+>
+  <div class="testimonials-section__container">
+    {% if s.subheading != blank %}
+      <p class="testimonials-section__subheading">{{ s.subheading }}</p>
+    {% endif %}
+
+    {% if s.heading != blank %}
+      <h2 class="testimonials-section__heading">{{ s.heading }}</h2>
+    {% endif %}
+
+    <div class="testimonials-slider" aria-label="Testimonials slider">
+      <div class="testimonials-slider__track-wrapper">
+        <div class="testimonials-slider__track" data-track>
+          {% for block in section.blocks %}
+            {% assign block_s = block.settings %}
+            <div
+              class="testimonials-slider__slide"
+              data-slide
+              {{ block.shopify_attributes }}
+              style="
+                {% if block_s.card_background != blank %}--card-bg: {{ block_s.card_background }};{% endif %}
+                {% if block_s.card_text_color != blank %}--card-text: {{ block_s.card_text_color }};{% endif %}
+              "
+            >
+              <div class="testimonials-card">
+                <div class="testimonials-card__quote-icon" aria-hidden="true">
+                  <svg width="36" height="28" viewBox="0 0 36 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 28V17.2C0 14.1333 0.466667 11.3333 1.4 8.8C2.4 6.26667 3.73333 4.13333 5.4 2.4C7.13333 0.666667 9.13333 0 11.4 0L12.6 2C10.4667 2.53333 8.6 3.8 7 5.8C5.46667 7.73333 4.7 9.93333 4.7 12.4H11.4V28H0ZM20.6 28V17.2C20.6 14.1333 21.0667 11.3333 22 8.8C23 6.26667 24.3333 4.13333 26 2.4C27.7333 0.666667 29.7333 0 32 0L33.2 2C31.0667 2.53333 29.2 3.8 27.6 5.8C26.0667 7.73333 25.3 9.93333 25.3 12.4H32V28H20.6Z" fill="#8B5CF6"/>
+                  </svg>
+                </div>
+
+                <p class="testimonials-card__review">{{ block_s.review_text }}</p>
+
+                {% if block_s.rating > 0 %}
+                  <div class="testimonials-card__stars" aria-label="Rating: {{ block_s.rating }} out of 5">
+                    {% for i in (1..5) %}
+                      <span
+                        class="testimonials-card__star {% if i <= block_s.rating %}testimonials-card__star--filled{% endif %}"
+                        aria-hidden="true"
+                        >★</span
+                      >
+                    {% endfor %}
+                  </div>
+                {% endif %}
+
+                <div class="testimonials-card__divider" aria-hidden="true"></div>
+
+                <div class="testimonials-card__client">
+                  <div class="testimonials-card__avatar">
+                    {% if block_s.client_image != blank %}
+                      {{
+                        block_s.client_image
+                        | image_url: width: 80
+                        | image_tag: loading: 'lazy', width: 40, height: 40, alt: block_s.client_name
+                      }}
+                    {% else %}
+                      <div class="testimonials-card__avatar-placeholder" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </div>
+                    {% endif %}
+                  </div>
+                  <div class="testimonials-card__client-info">
+                    <strong class="testimonials-card__client-name">{{ block_s.client_name }}</strong>
+                    {% if block_s.client_location != blank %}
+                      <span class="testimonials-card__client-location">{{ block_s.client_location }}</span>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      {% if s.show_arrows %}
+        <button
+          class="testimonials-slider__arrow testimonials-slider__arrow--prev"
+          data-prev
+          aria-label="Previous testimonial"
+          type="button"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button
+          class="testimonials-slider__arrow testimonials-slider__arrow--next"
+          data-next
+          aria-label="Next testimonial"
+          type="button"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      {% endif %}
+
+      {% if s.show_dots %}
+        <div class="testimonials-slider__dots" data-dots role="tablist" aria-label="Testimonial pagination">
+          {% for block in section.blocks %}
+            <button
+              class="testimonials-slider__dot {% if forloop.first %}testimonials-slider__dot--active{% endif %}"
+              data-dot="{{ forloop.index0 }}"
+              role="tab"
+              aria-label="Go to testimonial {{ forloop.index }}"
+              aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+              type="button"
+            ></button>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<style>
+  .testimonials-section--{{ section_id }} {
+    --primary: #8B5CF6;
+    --primary-light: #EDE9FE;
+    --card-bg: #ffffff;
+    --card-text: #374151;
+    --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+    --card-shadow-active: 0 12px 48px rgba(139, 92, 246, 0.15);
+    --radius: 16px;
+    --transition: 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    background-color: var(--testimonials-bg);
+    padding-top: var(--testimonials-pt);
+    padding-bottom: var(--testimonials-pb);
+    overflow: hidden;
+  }
+
+  .testimonials-section--{{ section_id }} .testimonials-section__container {
+    max-width: var(--testimonials-max-width);
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* Headings */
+  .testimonials-section--{{ section_id }} .testimonials-section__subheading {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--primary);
+    margin: 0 0 12px;
+  }
+
+  .testimonials-section--{{ section_id }} .testimonials-section__heading {
+    text-align: center;
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 700;
+    color: #111827;
+    line-height: 1.15;
+    --heading-font: {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
+    --body-font: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+    letter-spacing: -0.02em;
+  }
+
+  /* Slider Wrapper */
+  .testimonials-section--{{ section_id }} .testimonials-slider {
+    position: relative;
+    padding-bottom: 48px;
+  }
+
+  .testimonials-section--{{ section_id }} .testimonials-slider__track-wrapper {
+    overflow: hidden;
+    padding: 32px 0;
+  }
+
+  .testimonials-section--{{ section_id }} .testimonials-slider__track {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    will-change: transform;
+    transition: transform var(--transition);
+  }
+
+  /* Slides */
+  .testimonials-section--{{ section_id }} .testimonials-slider__slide {
+    flex: 0 0 33.333%;
+    padding: 0 16px;
+    box-sizing: border-box;
+    transition: transform var(--transition), opacity var(--transition);
+    transform: scale(0.9);
+    opacity: 0.75;
+  }
+
+  .testimonials-section--{{ section_id }} .testimonials-slider__slide.is-active {
+    transform: scale(1);
+    opacity: 1;
+    z-index: 2;
+  }
+
+  .testimonials-section--{{ section_id }} .testimonials-slider__slide.is-adjacent {
+    opacity: 0.85;
+  }
+
+  /* Cards */
+  .testimonials-section--{{ section_id }} .testimonials-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 36px 32px 32px;
+    box-shadow: var(--card-shadow);
+    color: var(--card-text);
+    height: 100%;
+    box-sizing: border-box;
+    transition: box-shadow var(--transition);
+    position: relative;
+  }
+
+  .testimonials-section--{{ section_id }} .testimonials-slider__slide.is-active .testimonials-card {
+    box-shadow: var(--card-shadow-active);
+  }
+
+  .testimonials-section--{{ section_id }} .testimonials-card:hover {
+    box-shadow: 0 16px 56px rgba(139, 92, 246, 0.18);
+  }
+
+  /* Quote Icon */
+  .testimonials-section--{{ section_id }} .testimonials-card__quote-icon {
+    margin-bottom: 20px;
+    line-height: 1;
+  }
+
+  /* Review Text */
+  .testimonials-section--{{ section_id }} .testimonials-card__review {
+    font-size: 15px;
+    line-height: 1.75;
+    color: #4B5563;
+    margin: 0 0 20px;
+    font-weight: 400;
+  }
+
+  .testimonials-section--{{ section_id }} .testimonials-slider__slide.is-active .testimonials-card__review {
+    font-size: 16px;
+  }
+
+  /* Stars */
+  .testimonials-section--{{ section_id }} .testimonials-card__stars {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 16px;
+  }
+
+  .testimonials-section--{{ section_id }} .testimonials-card__star {
+    font-size: 18px;
+    color: #D1D5DB;
+    transition: color 0.2s ease;
+  }
+
+  .testimonials-section--{{ section_id }} .testimonials-card__star--filled {
+    color: #F59E0B;
+  }
+
+  /* Divider */
+  .testimonials-section--{{ section_id }} .testimonials-card__divider {
+    height: 1px;
+    background: #F3F4F6;
+    margin: 20px 0;
+  }
+
+  /* Client */
+  .testimonials-section--{{ section_id }} .testimonials-card__client {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .testimonials-section--{{ section_id }} .testimonials-card__avatar {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--primary-light);
+  }
+
+  .testimonials-section--{{ section_id }} .testimonials-slider__slide.is-active .testimonials-card__avatar {
+    width: 56px;
+    height: 56px;
+  }
+
+  .testimonials-section--{{ section_id }} .testimonials-card__avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .testimonials-section--{{ section_id }} .testimonials-card__avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+  }
+
+  .testimonials-section--{{ section_id }} .testimonials-card__avatar-placeholder svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .testimonials-section--{{ section_id }} .testimonials-card__client-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .testimonials-section--{{ section_id }} .testimonials-card__client-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1.3;
+  }
+
+  .testimonials-section--{{ section_id }} .testimonials-slider__slide.is-active .testimonials-card__client-name {
+    font-size: 17px;
+  }
+
+  .testimonials-section--{{ section_id }} .testimonials-card__client-location {
+    font-size: 13px;
+    color: #9CA3AF;
+    font-weight: 400;
+  }
+
+  /* Arrows */
+  .testimonials-section--{{ section_id }} .testimonials-slider__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(calc(-50% - 24px));
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: none;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #374151;
+    transition: background 0.2s ease, box-shadow 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    z-index: 10;
+  }
+
+  .testimonials-section--{{ section_id }} .testimonials-slider__arrow:hover {
+    background: var(--primary);
+    color: #ffffff;
+    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.3);
+    transform: translateY(calc(-50% - 24px)) scale(1.05);
+  }
+
+  .testimonials-section--{{ section_id }} .testimonials-slider__arrow--prev {
+    left: -8px;
+  }
+
+  .testimonials-section--{{ section_id }} .testimonials-slider__arrow--next {
+    right: -8px;
+  }
+
+  /* Dots */
+  .testimonials-section--{{ section_id }} .testimonials-slider__dots {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .testimonials-section--{{ section_id }} .testimonials-slider__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #D1D5DB;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.25s ease, width 0.25s ease, border-radius 0.25s ease;
+  }
+
+  .testimonials-section--{{ section_id }} .testimonials-slider__dot--active {
+    background: var(--primary);
+    width: 28px;
+    border-radius: 5px;
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .testimonials-section--{{ section_id }} .testimonials-slider__slide {
+      flex: 0 0 50%;
+    }
+
+    .testimonials-section--{{ section_id }} .testimonials-slider__arrow--prev {
+      left: 4px;
+    }
+
+    .testimonials-section--{{ section_id }} .testimonials-slider__arrow--next {
+      right: 4px;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .testimonials-section--{{ section_id }} .testimonials-slider__slide {
+      flex: 0 0 100%;
+      transform: scale(1) !important;
+      opacity: 1 !important;
+      padding: 0 8px;
+    }
+
+    .testimonials-section--{{ section_id }} .testimonials-section__container {
+      padding: 0 16px;
+    }
+
+    .testimonials-section--{{ section_id }} .testimonials-slider__arrow--prev {
+      left: -4px;
+    }
+
+    .testimonials-section--{{ section_id }} .testimonials-slider__arrow--next {
+      right: -4px;
+    }
+
+    .testimonials-section--{{ section_id }} .testimonials-slider__arrow {
+      width: 40px;
+      height: 40px;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    'use strict';
+
+    /* ─── DOM refs ─────────────────────────────────────── */
+    const section = document.querySelector('.testimonials-section--{{ section_id }}');
+    if (!section) return;
+
+    const track = section.querySelector('[data-track]');
+    const wrapper = section.querySelector('.testimonials-slider__track-wrapper');
+    const prevBtn = section.querySelector('[data-prev]');
+    const nextBtn = section.querySelector('[data-next]');
+    const dotsWrap = section.querySelector('[data-dots]');
+    const dots = dotsWrap ? Array.from(dotsWrap.querySelectorAll('[data-dot]')) : [];
+
+    /* ─── Config ────────────────────────────────────────── */
+    const autoplayEnabled = section.dataset.autoplay === 'true';
+    const autoplaySpeed = parseInt(section.dataset.autoplaySpeed, 10) || 4000;
+    const EASE = 'transform 0.48s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+
+    /* ─── Original slides ───────────────────────────────── */
+    const origSlides = Array.from(track.querySelectorAll('[data-slide]'));
+    const total = origSlides.length;
+    if (total === 0) return;
+
+    /* ─── Clone-based infinite loop setup ──────────────────
+     Strategy: prepend [last] clone(s) and append [first] clone(s).
+     We clone enough slides to always fill the visible area at edges.
+     For a 3-up slider we clone 3 slides on each side.                */
+    const CLONE_COUNT = 3; // clones per side – enough for any breakpoint
+
+    function buildClones() {
+      // Remove existing clones from a previous rebuild
+      track.querySelectorAll('[data-clone]').forEach((c) => c.remove());
+
+      // Prepend clones of the LAST N originals (reversed order)
+      for (let i = CLONE_COUNT - 1; i >= 0; i--) {
+        const clone = origSlides[((i % total) + total) % total].cloneNode(true);
+        clone.setAttribute('data-clone', 'prev');
+        clone.removeAttribute('data-slide');
+        track.insertBefore(clone, track.firstChild);
+      }
+
+      // Append clones of the FIRST N originals
+      for (let i = 0; i < CLONE_COUNT; i++) {
+        const clone = origSlides[i % total].cloneNode(true);
+        clone.setAttribute('data-clone', 'next');
+        clone.removeAttribute('data-slide');
+        track.appendChild(clone);
+      }
+    }
+
+    buildClones();
+
+    /* ─── All slides (clones + originals) ─────────────────── */
+    function allSlides() {
+      return Array.from(track.children);
+    }
+
+    /* ─── State ─────────────────────────────────────────── */
+    // trackIndex points into the full (cloned) slides array.
+    // It starts at CLONE_COUNT so that the first REAL slide is centred.
+    let trackIndex = CLONE_COUNT; // index into full slide array
+    let realIndex = 0; // logical index (0…total-1) for dots
+    let isTransiting = false;
+    let autoplayTimer = null;
+    let resizeTimer = null;
+    let startX = 0;
+    let isDragging = false;
+    let dragStartIndex = 0;
+
+    /* ─── Helpers ────────────────────────────────────────── */
+    function getVisibleCount() {
+      const w = window.innerWidth;
+      if (w <= 767) return 1;
+      if (w <= 1024) return 2;
+      return 3;
+    }
+
+    function getSlideWidth() {
+      return wrapper.offsetWidth / getVisibleCount();
+    }
+
+    /* Compute translateX so that trackIndex slide is centred */
+    function calcTranslate(idx) {
+      const sw = getSlideWidth();
+      const vis = getVisibleCount();
+      const centerShift = Math.floor(vis / 2);
+      return -((idx - centerShift) * sw);
+    }
+
+    /* Update slide active/adjacent classes across ALL slides (clones too) */
+    function updateClasses() {
+      const all = allSlides();
+      all.forEach((slide, i) => {
+        slide.classList.remove('is-active', 'is-adjacent');
+        const dist = Math.abs(i - trackIndex);
+        if (dist === 0) slide.classList.add('is-active');
+        else if (dist === 1) slide.classList.add('is-adjacent');
+      });
+    }
+
+    /* Update pagination dots */
+    function updateDots() {
+      dots.forEach((dot, i) => {
+        const active = i === realIndex;
+        dot.classList.toggle('testimonials-slider__dot--active', active);
+        dot.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+    }
+
+    /* Core: move track with optional animation */
+    function moveTo(idx, animate) {
+      track.style.transition = animate ? EASE : 'none';
+      track.style.transform = `translateX(${calcTranslate(idx)}px)`;
+    }
+
+    /* After a transition to a clone, silently snap to the real counterpart */
+    function onTransitionEnd() {
+      isTransiting = false;
+      const all = allSlides();
+      const len = all.length; // CLONE_COUNT + total + CLONE_COUNT
+
+      // Overshot on the right → jumped into append-clones territory
+      if (trackIndex >= CLONE_COUNT + total) {
+        trackIndex = CLONE_COUNT + (trackIndex - (CLONE_COUNT + total));
+        moveTo(trackIndex, false);
+        updateClasses();
+      }
+      // Overshot on the left → jumped into prepend-clones territory
+      else if (trackIndex < CLONE_COUNT) {
+        trackIndex = CLONE_COUNT + total - (CLONE_COUNT - trackIndex);
+        moveTo(trackIndex, false);
+        updateClasses();
+      }
+
+      // Re-enable transition after silent snap
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          track.style.transition = EASE;
+        });
+      });
+    }
+
+    track.addEventListener('transitionend', (e) => {
+      if (e.propertyName === 'transform') onTransitionEnd();
+    });
+
+    /* ─── Public navigation ──────────────────────────────── */
+    function goToTrack(newTrackIdx, animate = true) {
+      if (isTransiting && animate) return;
+      isTransiting = animate;
+      trackIndex = newTrackIdx;
+      // Compute real index (wrap around)
+      realIndex = (((trackIndex - CLONE_COUNT) % total) + total) % total;
+      moveTo(trackIndex, animate);
+      updateClasses();
+      updateDots();
+    }
+
+    function next() {
+      goToTrack(trackIndex + 1);
+    }
+    function prev() {
+      goToTrack(trackIndex - 1);
+    }
+
+    /* Jump to logical real index (for dots) */
+    function goToReal(ri) {
+      goToTrack(CLONE_COUNT + (((ri % total) + total) % total));
+    }
+
+    /* ─── Autoplay ───────────────────────────────────────── */
+    function startAutoplay() {
+      if (!autoplayEnabled) return;
+      stopAutoplay();
+      autoplayTimer = setInterval(next, autoplaySpeed);
+    }
+
+    function stopAutoplay() {
+      clearInterval(autoplayTimer);
+      autoplayTimer = null;
+    }
+
+    function resetAutoplay() {
+      if (autoplayEnabled) {
+        stopAutoplay();
+        startAutoplay();
+      }
+    }
+
+    /* ─── Init ───────────────────────────────────────────── */
+    moveTo(trackIndex, false);
+    updateClasses();
+    updateDots();
+    startAutoplay();
+
+    /* ─── Arrow buttons ──────────────────────────────────── */
+    prevBtn &&
+      prevBtn.addEventListener('click', () => {
+        prev();
+        resetAutoplay();
+      });
+    nextBtn &&
+      nextBtn.addEventListener('click', () => {
+        next();
+        resetAutoplay();
+      });
+
+    /* ─── Dots ───────────────────────────────────────────── */
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => {
+        goToReal(i);
+        resetAutoplay();
+      });
+    });
+
+    /* ─── Hover pause ────────────────────────────────────── */
+    section.addEventListener('mouseenter', stopAutoplay);
+    section.addEventListener('mouseleave', startAutoplay);
+
+    /* ─── Keyboard ───────────────────────────────────────── */
+    section.setAttribute('tabindex', '0');
+    section.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') {
+        prev();
+        resetAutoplay();
+      }
+      if (e.key === 'ArrowRight') {
+        next();
+        resetAutoplay();
+      }
+    });
+
+    /* ─── Touch swipe ────────────────────────────────────── */
+    let touchStartX = 0;
+
+    wrapper.addEventListener(
+      'touchstart',
+      (e) => {
+        touchStartX = e.touches[0].clientX;
+        stopAutoplay();
+      },
+      { passive: true }
+    );
+
+    wrapper.addEventListener(
+      'touchend',
+      (e) => {
+        const diff = touchStartX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 44) diff > 0 ? next() : prev();
+        startAutoplay();
+      },
+      { passive: true }
+    );
+
+    /* ─── Mouse drag ─────────────────────────────────────── */
+    let mouseStartX = 0;
+
+    wrapper.addEventListener('mousedown', (e) => {
+      mouseStartX = e.clientX;
+      isDragging = true;
+      stopAutoplay();
+      // Disable pointer events on cards during drag to prevent mis-clicks
+      track.style.pointerEvents = 'none';
+    });
+
+    window.addEventListener('mouseup', (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      track.style.pointerEvents = '';
+      const diff = mouseStartX - e.clientX;
+      if (Math.abs(diff) > 44) diff > 0 ? next() : prev();
+      startAutoplay();
+    });
+
+    /* ─── Debounced resize ───────────────────────────────── */
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        // Rebuild clones in case layout changed significantly, then reposition
+        buildClones();
+        moveTo(trackIndex, false);
+        updateClasses();
+      }, 160);
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Testimonials Slider",
+  "tag": "section",
+  "class": "section",
+  "max_blocks": 20,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section Heading",
+      "default": "What Our Client Say!"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "TESTIMONIALS"
+    },
+    {
+      "type": "range",
+      "id": "container_max_width",
+      "label": "Container Max Width",
+      "min": 900,
+      "max": 1920,
+      "step": 20,
+      "default": 1620,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#F9FAFB"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 50,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 50,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay_enabled",
+      "label": "Enable Autoplay",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "label": "Autoplay Speed (seconds)",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "label": "Show Navigation Arrows",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dots",
+      "label": "Show Pagination Dots",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "text",
+          "id": "client_name",
+          "label": "Client Name",
+          "default": "Esther Howard"
+        },
+        {
+          "type": "text",
+          "id": "client_location",
+          "label": "Client Location",
+          "default": "New York, America"
+        },
+        {
+          "type": "image_picker",
+          "id": "client_image",
+          "label": "Client Photo"
+        },
+        {
+          "type": "textarea",
+          "id": "review_text",
+          "label": "Review Text",
+          "default": "I absolutely love this salon! From the warm welcome to the final look, everything was perfect. The staff really listened to what I wanted and made me feel so comfortable."
+        },
+        {
+          "type": "range",
+          "id": "rating",
+          "label": "Star Rating",
+          "min": 0,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "color",
+          "id": "card_background",
+          "label": "Card Background Color (optional)"
+        },
+        {
+          "type": "color",
+          "id": "card_text_color",
+          "label": "Card Text Color (optional)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonials Slider",
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": {
+            "client_name": "Jenny Wilson",
+            "client_location": "New York, America",
+            "review_text": "I absolutely love this salon! From the warm welcome to the final look, everything was perfect. The staff really listened to what I wanted feel so comfortable.",
+            "rating": 5
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "client_name": "Esther Howard",
+            "client_location": "New York, America",
+            "review_text": "I absolutely love this salon! From the warm welcome to the final look, everything was perfect. The staff really listened to what I wanted feel so comfortable.",
+            "rating": 5
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "client_name": "Wade Warren",
+            "client_location": "New York, America",
+            "review_text": "I absolutely love this salon! From the warm welcome to the final look, everything was perfect. The staff really listened to what I wanted feel so comfortable.",
+            "rating": 5
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
